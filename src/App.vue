@@ -7,11 +7,28 @@
         <input type="checkbox" v-bind:checked="todo.done"
         v-on:change="toggleTodoStatus(todo)">
         {{todo.name}}
+        -
+        <span v-for="id in todo.labelIds" v-bind:key="id">
+          {{getLabelText(id)}}
+        </span>
       </li>
     </ul>
 
     <form v-on:submit.prevent="addTodo">
       <input type="text" v-model="newTodoName" placeholder="新しいtodo">
+    </form>
+
+    <h2>ラベル一覧</h2>
+    <ul>
+      <!-- v-forを用いてlabelを一つずつ表示 -->
+      <li v-for="label in labels" v-bind:key="label.id">
+        <input type="checkbox" v-bind:value="label.id"
+        v-model="newTodoLabelIds">
+        {{label.text}}
+      </li>
+    </ul>
+    <form v-on:submit.prevent="addLabel">
+      <input type="text" v-model="newLabelText" placeholder="新しいラベル">
     </form>
   </div>
 </template>
@@ -25,6 +42,10 @@ export default {
     return {
       // 入力中の新しいtodo名を一時的に保持
       newTodoName: '',
+      // 入力中の新しいtodoに紐づくlabelを一時的に保持
+      newTodoLabelIds: [],
+      // 入力中の新しいlabelを一時的に保持
+      newLabelText: '',
     }
   },
   // 算出プロパティを定義
@@ -32,6 +53,9 @@ export default {
     todos() {
       return this.$store.state.todos
     },
+    labels() {
+      return this.$store.state.labels
+    }
   },
   // template内で使用されるmethodを定義
   methods: {
@@ -40,8 +64,10 @@ export default {
       // store.jsのaddTodoミューテーションにコミット
       this.$store.commit('addTodo', {
         name: this.newTodoName,
+        labelIds: this.newTodoLabelIds,
       })
       this.newTodoName = ''
+      this.newTodoLabelIds= []
     },
 
     // todoの完了状態を更新
@@ -50,7 +76,22 @@ export default {
       this.$store.commit('toggleTodoStatus', {
         id: todo.id
       })
-    }
+    },
+
+    // ラベルの追加
+    addLabel() {
+      // store.jsのaddLabelミューテーションにコミット
+      this.$store.commit('addLabel', {
+        text: this.newLabelText
+      })
+      this.newLabelText= ''
+    },
+
+    // ラベルのIDからそのラベルのテキストを返しtemplate内に表示
+    getLabelText(id) {
+      const label = this.labels.filter(label => label.id === id)[0]
+      return label ? label.text : ''
+    },
 
   },
 }
