@@ -24,7 +24,7 @@ export default {
   data() {
     return {
       // 入力中の新しいtodo名を一時的に保持
-      newTodo: '',
+      newTodoName: '',
     }
   },
   // 算出プロパティを定義
@@ -39,9 +39,9 @@ export default {
     addTodo() {
       // store.jsのaddTodoミューテーションにコミット
       this.$store.commit('addTodo', {
-        name: this.newTodo,
+        name: this.newTodoName,
       })
-      this.newTodo = ''
+      this.newTodoName = ''
     },
 
     // todoの完了状態を更新

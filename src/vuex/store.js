@@ -1,6 +1,5 @@
 import  Vue  from "vue"
 import Vuex from "vuex"
-import { stat } from "fs";
 
 // グローバルメソッドを呼び出すことによってプラグイン(vuex)を使用
 Vue.use(Vuex)
