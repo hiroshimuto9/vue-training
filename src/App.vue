@@ -30,12 +30,25 @@
     <form v-on:submit.prevent="addLabel">
       <input type="text" v-model="newLabelText" placeholder="新しいラベル">
     </form>
+
+    <h2>ラベルでフィルタ</h2>
+    <ul>
+      <!-- v-forを用いてlabelを一つずつ表示 -->
+      <li v-for="label in labels" v-bind:key="label.id">
+        <input type="radio" v-bind:checked="label.id === filter"
+        v-on:change="changeFilter(label.id)">
+        {{label.text}}
+      </li>
+      <li>
+        <input type="radio" v-bind:checked="filter === null"
+        v-on:change="changeFilter(null)">
+        フィルタしない
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
   name: 'app',
   data() {
@@ -51,10 +64,13 @@ export default {
   // 算出プロパティを定義
   computed: {
     todos() {
-      return this.$store.state.todos
+      return this.$store.getters.filteredTodos
     },
     labels() {
       return this.$store.state.labels
+    },
+    filter() {
+      return this.$store.state.filter
     }
   },
   // template内で使用されるmethodを定義
@@ -92,6 +108,14 @@ export default {
       const label = this.labels.filter(label => label.id === id)[0]
       return label ? label.text : ''
     },
+
+    // フィルタする対象のラベルを変更
+    changeFilter(labelId) {
+      // store.jsのchangeFilterミューテーションにコミット
+      this.$store.commit('changeFilter', {
+        filter: labelId
+      })
+    }
 
   },
 }

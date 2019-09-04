@@ -56,6 +56,22 @@ const store = new Vuex.Store({
         // 本来であればサーバー側で生成するが、ここでは決め打ち
         nextTodoId: 5,
         nextLabelId: 5,
+
+        // フィルタするラベルのID
+        filter: null,
+    },
+
+    getters: {
+        // フィルタ後のタスクを返す
+        filteredTodos (state) {
+            // ラベルが選択されていなければ一覧を返す
+            if (!state.filter) {
+                return state.todos
+            }
+            return state.todos.filter(todo => {
+                return todo.labelIds.indexOf(state.filter) >= 0
+            })
+        }
     },
     // storeの状態の変更を処理
     mutations: {
@@ -86,6 +102,10 @@ const store = new Vuex.Store({
                 text
             })
             state.nextLabelId++
+        },
+        // フィルタリング対象のラベルを変更
+        changeFilter (state, {filter}) {
+            state.filter = filter
         },
     },
 })
