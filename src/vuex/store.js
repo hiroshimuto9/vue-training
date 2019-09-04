@@ -1,5 +1,6 @@
 import  Vue  from "vue"
 import Vuex from "vuex"
+import { stat } from "fs";
 
 // グローバルメソッドを呼び出すことによってプラグイン(vuex)を使用
 Vue.use(Vuex)
@@ -29,8 +30,33 @@ const store = new Vuex.Store({
                 name: '掃除をする',
                 done: true
             },
-        ]
-    }
+        ],
+        // 本来であればサーバー側で生成するが、ここでは決め打ち
+        nextTodoId: 5,
+    },
+    // storeの状態の変更を処理
+    mutations: {
+        // todoの追加
+        addTodo (state, {name}) {
+            state.todos.push({
+                id: state.nextTodoId,
+                name,
+                done: false
+            })
+            state.nextTodoId++
+        },
+        // todoの完了状態を変更
+        toggleTodoStatus (state, {id}) {
+            const filtered = state.todos.filter(todo => {
+                return todo.id === id
+            })
+
+            filtered.forEach(todo => {
+                todo.done = !todo.done
+            })
+        }
+
+    },
 
 })
 
