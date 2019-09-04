@@ -45,6 +45,10 @@
         フィルタしない
       </li>
     </ul>
+
+    <h2>保存と復元</h2>
+    <button type="button" v-on:click="save">保存</button>
+    <button type="button" v-on:click="restore">復元</button>
   </div>
 </template>
 
@@ -75,7 +79,7 @@ export default {
   },
   // template内で使用されるmethodを定義
   methods: {
-    //　新規作成
+    // 新規作成
     addTodo() {
       // store.jsのaddTodoミューテーションにコミット
       this.$store.commit('addTodo', {
@@ -115,6 +119,18 @@ export default {
       this.$store.commit('changeFilter', {
         filter: labelId
       })
+    },
+
+    // 現在の状態をローカルストレージに保存
+    save() {
+      // store.jsのsaveアクションにコミット
+      this.$store.dispatch('save')
+    },
+
+    // 保存されている状態を復元
+    restore() {
+      // store.jsのrestoreアクションにコミット
+      this.$store.dispatch('restore')
     }
 
   },

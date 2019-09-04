@@ -107,6 +107,33 @@ const store = new Vuex.Store({
         changeFilter (state, {filter}) {
             state.filter = filter
         },
+        // ステートの復元
+        restore(state, {todos, labels, nextTodoId, nextLabelId}) {
+            state.todos = todos
+            state.labels = labels
+            state.nextTodoId = nextTodoId
+            state.nextLabelId = nextLabelId
+        }
+    },
+    // ミューテーションへのコミットの役割
+    actions: {
+        // ローカルストレージにステートを保存する
+        save ({state}) {
+            const data = {
+                todos: state.todos,
+                labels: state.labels,
+                nextTodoId: state.nextTodoId,
+                nextLabelId: state.nextLabelId
+            }
+            localStorage.setItem('todo-app-data', JSON.stringify(data))
+        },
+        // ローカルストレージからステートを復元
+        restore ({commit}) {
+            const data = localStorage.getItem('todo-app-data')
+            if (data) {
+                commit('restore', JSON.parse(data))
+            }
+        }
     },
 })
 
